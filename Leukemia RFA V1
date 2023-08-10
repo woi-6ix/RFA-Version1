@@ -1,1 +1,39 @@
-#a
+############################################################################
+# ATOMS Lab - Leukemia Risk Factors Analysis via Causal Trees and Branches #
+############################################################################
+
+### Install packages in R ###
+library(grf)
+
+library(dplyr) # For data manipulation
+
+### Indoor CSV ###
+#```{r, echo = TRUE}
+
+# Set the working directory to the directory containing the "Indoor.csv" file
+setwd("C:/Users/sathw/Downloads")
+data <- read.csv(file="Indoor.csv",head=TRUE,sep=",")
+
+# Define your treatment variable (X) and outcome variable (Y)
+treatment_var <- data$benzene
+outcome_var <- data$Prob
+
+# Create a data matrix
+X <- as.matrix(data %>% select(socioeco.1, socioeco.2, socioeco.3, socioeco.4, race.1, race.2, birthplace, parity, benzene))
+
+print(X)
+
+# Train the causal tree model
+causal_tree <- causal_forest(X = X, Y = outcome_var, W = treatment_var)
+
+# Print the causal tree
+print(causal_tree)
+
+#plot(causal_tree)
+
+# Plot the causal tree using grf::plot.causal_forest
+grf::plot.causal_forest(causal_tree)
+
+#The printed causal tree will show the structure of the tree and the estimated treatment
+#effect at each split. Interpret the tree to understand how different variables relate to
+#the probability of leukemia based on benzene exposure.
